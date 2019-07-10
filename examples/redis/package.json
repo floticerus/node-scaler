@@ -1,0 +1,15 @@
+{
+  "name": "node-scaler-example-redis",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kevin von Flotow",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "redis": "^2.8.0"
+  }
+}

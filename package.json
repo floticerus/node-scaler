@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/kvonflotow/node-scaler/issues"
   },
-  "homepage": "https://github.com/kvonflotow/node-scaler#readme"
+  "homepage": "https://github.com/kvonflotow/node-scaler#readme",
+  "dependencies": {
+    "tracer": "^0.9.8"
+  }
 }
