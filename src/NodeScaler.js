@@ -23,16 +23,16 @@ class NodeScaler extends EventEmitter
 
     async start()
     {
-        return new Promise( ( resolve, reject ) =>
+        return new Promise( async ( resolve, reject ) =>
             {
                 if ( !this.backend )
                 {
-                    return reject( new Error( 'No NodeScalerBackend instance' ) )
+                    return reject( new Error( 'No backend instance' ) )
                 }
 
-                if ( !( this.backend instanceof NodeScaler.Backend ) )
+                if ( !( this.backend instanceof NodeScaler.Protocol ) )
                 {
-                    return reject( new Error( 'Invalid NodeScalerBackend instance' ) )
+                    return reject( new Error( 'Invalid NodeScaler.Protocol instance' ) )
                 }
 
                 await this.backend.start()
@@ -70,7 +70,9 @@ class NodeScaler extends EventEmitter
     }
 }
 
+NodeScaler.Protocol = require( path.join( __dirname, 'NodeScaler.Protocol' ) )
+
 module.exports = NodeScaler
 
-NodeScaler.Protocol = path.join( __dirname, 'NodeScaler.Protocol' )
+// NodeScaler.Protocol = path.join( __dirname, 'NodeScaler.Protocol' )
 // NodeScaler.Backend = path.join( __dirname, 'NodeScaler.Backend' )

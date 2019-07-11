@@ -38,7 +38,7 @@ class NodeScalerProtocolRedis extends NodeScaler.Protocol
                     return resolve()
                 }
 
-                this.client = redis.createClient( options.clientOptions )
+                this.client = redis.createClient( this.clientOptions )
 
                 // forward redis client error messages
                 this.client.on( 'error', err => this.emit( 'error', err ) )
@@ -101,4 +101,4 @@ class NodeScalerProtocolRedis extends NodeScaler.Protocol
     }
 }
 
-module.exports = NodeScalerBackend
+module.exports = NodeScalerProtocolRedis

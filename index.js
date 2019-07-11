@@ -1,1 +1,1 @@
-module.exports = require( 'path' ).join( __dirname, 'src', 'NodeScaler' )
+module.exports = require( require( 'path' ).join( __dirname, 'src', 'NodeScaler' ) )
