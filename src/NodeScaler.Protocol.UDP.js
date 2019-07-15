@@ -2,9 +2,9 @@ const path = require( 'path' )
 
 const logger = require( path.join( __dirname, 'logger' ) )
 
-const { EventEmitter } = require( 'events' )
+const NodeScaler = require( path.join( __dirname, 'NodeScaler' ) )
 
-class NodeScalerProtocol extends EventEmitter
+class NodeScalerProtocolUDP extends NodeScaler.Protocol
 {
     constructor( options )
     {
@@ -57,4 +57,4 @@ class NodeScalerProtocol extends EventEmitter
     }
 }
 
-module.exports = NodeScalerProtocol
+module.exports = NodeScalerProtocolUDP

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/kvonflotow/node-scaler#readme",
   "dependencies": {
+    "shortid": "^2.2.14",
     "tracer": "^0.9.8"
   }
 }

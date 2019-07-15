@@ -22,13 +22,14 @@ class NodeScalerProtocolRedis extends NodeScaler.Protocol
 
         this.clientOptions = options.clientOptions
         this.client = options.client
+        // this.clients = []
         this.onError = options.error
     }
 
     // start connection to redis server
     async start()
     {
-        await super.start()
+        // super.start()
 
         return new Promise( ( resolve, reject ) =>
             {
@@ -88,14 +89,46 @@ class NodeScalerProtocolRedis extends NodeScaler.Protocol
 
     }
 
+    async createClient()
+    {
+        return new Promise( ( resolve, reject ) =>
+            {
+                if ( !this.client )
+                {
+                    return reject( new Error( 'No connection to redis' ) )
+				}
+
+				const id = NodeScaler.id.generate()
+
+				// create client in redis with unique id
+				this.client.hmset( id,
+					{
+						// timestamp
+						t: Date.now()
+					}
+				)
+
+                const client = new NodeScaler.Client(
+                    {
+						id: id
+                    }
+                )
+
+                // this.clients.push( client )
+
+                resolve( client )
+            }
+        )
+    }
+
     // join a pool
-    join( client, pool )
+    async join( client, pool )
     {
 
     }
 
     // leave a pool
-    leave( client, pool )
+    async leave( client, pool )
     {
 
     }
