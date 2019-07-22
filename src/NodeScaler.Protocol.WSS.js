@@ -41,7 +41,7 @@ class NodeScalerProtocolWSS extends NodeScaler.Protocol
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }
 
-    async craeteClient()
+    async createClient()
     {
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }

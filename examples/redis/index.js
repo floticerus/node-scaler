@@ -4,15 +4,19 @@ const NodeScaler = require( path.join( __dirname, '../', '../' ) )
 
 const NodeScalerRedis = require( path.join( __dirname, 'NodeScaler.Protocol.Redis' ) )
 
-const backend = new NodeScalerRedis(
-    {
-
-    }
-)
-
 const nodeScaler = new NodeScaler(
     {
-        backend: backend
+        backend: new NodeScalerRedis(
+            {
+        
+            }
+        ),
+
+        frontend: new NodeScaler.Protocol.TCP(
+            {
+        
+            }
+        )
     }
 )
 

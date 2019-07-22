@@ -18,7 +18,13 @@ class NodeScalerProtocolTCP extends NodeScaler.Protocol
 
 				port: 8000,
 
-				ipv6Only: false
+				ipv6Only: false,
+
+				// in milliseconds
+				heartbeatInterval: 4500,
+
+				// in milliseconds
+				heartbeatTimeout: 10000
 			},
 
 			options || {}
@@ -28,11 +34,18 @@ class NodeScalerProtocolTCP extends NodeScaler.Protocol
 		this.port = parseInt( options.port )
 		this.ipv6Only = options.ipv6Only ? true : false
 
+		this.heartbeatInterval = parseInt( options.heartbeatInterval )
+		this.heartbeatTimeout = parseInt( options.heartbeatTimeout )
+
 		this.server = null
+
+		this.clients = {}
 	}
 
-	async start()
+	async start( nodeScaler )
 	{
+		super.start( nodeScaler )
+
 		return new Promise( ( resolve, reject ) =>
 			{
 				this.server = net.createServer( this.connection.bind( this ) )
@@ -42,7 +55,7 @@ class NodeScalerProtocolTCP extends NodeScaler.Protocol
 
 				this.server.listen(
 					{
-						host: options.host,
+						host: this.host,
 
 						port: this.port,
 
@@ -79,9 +92,53 @@ class NodeScalerProtocolTCP extends NodeScaler.Protocol
 		)
 	}
 
-	connection( connection )
+	connection( socket )
 	{
-		logger.log( connection )
+		const client = this.createClient( socket )
+
+		logger.log( client )
+
+		this.clients[ client.id ] = client
+
+		// check heartbeat on an interval
+		const interval = setInterval( () =>
+			{
+				const t = Date.now() / 1000
+
+				// console.log( client.heartbeat )
+
+				if ( t - client.heartbeat > this.heartbeatTimeout )
+				{
+					this.clients[ client.id ] = null
+					delete this.clients[ client.id ]
+
+					// console.log( 'end the socket' )
+
+					socket.destroy()
+
+					return clearInterval( interval )
+				}
+
+				// console.log( Date.now() )
+
+				this.sendToClient( client, Buffer.from( '_' ) )
+			},
+
+			this.heartbeatInterval
+		)
+
+		// socket.setKeepAlive( true, 5000 )
+
+		// heartbeat pulse
+		socket.on( 'data', () => client.pulse() )
+
+		socket.on( 'end', () =>
+			{
+				clearInterval( interval )
+			}
+		)
+
+		socket.on( 'timeout', () => socket.end() )
 	}
 
 	// sends data to all clients
@@ -96,15 +153,49 @@ class NodeScalerProtocolTCP extends NodeScaler.Protocol
 		return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
 	}
 
+	async sendToClient( client, data )
+	{
+		// TODO move this part to an override in a child class
+		data = Buffer.concat(
+			[
+				Buffer.from( [ data.length ] ),
+				Buffer.isBuffer( data ) ? data : Buffer.from( data )
+			],
+			
+			// total length
+			1 + data.length
+		)
+
+		// console.log( data )
+
+		return new Promise( ( resolve, reject ) =>
+			{
+				client.socket.write( data, err => err
+					? reject( err )
+					: resolve()
+				)
+			}
+		)
+	}
+
 	// handler for incoming data
 	async receive( data )
 	{
 		return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
 	}
 
-	async craeteClient()
+	createClient( socket )
 	{
-		return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
+		const client = super.createClient(
+			{
+
+			}
+		)
+
+		client.server = this
+		client.socket = socket
+
+		return client
 	}
 
 	async join( client, pool )

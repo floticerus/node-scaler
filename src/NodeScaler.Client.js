@@ -4,6 +4,8 @@ const logger = require( path.join( __dirname, 'logger' ) )
 
 const { EventEmitter } = require( 'events' )
 
+const NodeScaler = require( path.join( __dirname, 'NodeScaler' ) )
+
 class NodeScalerClient extends EventEmitter
 {
     constructor( options )
@@ -18,7 +20,16 @@ class NodeScalerClient extends EventEmitter
             options || {}
         )
 
-        this.id = options.id
+        this.id = options.id || NodeScaler.id.generate()
+
+        this.pulse()
+    }
+
+    pulse()
+    {
+        this.heartbeat = Date.now() / 1000
+
+        // console.log( this.heartbeat )
     }
 }
 

@@ -4,17 +4,21 @@ const logger = require( path.join( __dirname, 'logger' ) )
 
 const { EventEmitter } = require( 'events' )
 
+const NodeScaler = require( path.join( __dirname, 'NodeScaler' ) )
+
 class NodeScalerProtocol extends EventEmitter
 {
     constructor( options )
     {
         super()
 
-
+        this.owner = null
     }
 
-    async start()
+    async start( nodeScaler )
     {
+        this.owner = nodeScaler
+
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }
 
@@ -41,9 +45,9 @@ class NodeScalerProtocol extends EventEmitter
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }
 
-    async craeteClient()
+    createClient( options )
     {
-        return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
+        return new NodeScaler.Client( options )
     }
 
     async join( client, pool )

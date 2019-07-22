@@ -13,8 +13,10 @@ class NodeScalerProtocolTLS extends NodeScaler.Protocol
 
     }
 
-    async start()
-    {
+    async start( nodeScaler )
+	{
+        super.start( nodeScaler )
+
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }
 
@@ -41,7 +43,7 @@ class NodeScalerProtocolTLS extends NodeScaler.Protocol
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }
 
-    async craeteClient()
+    async createClient()
     {
         return new Promise( ( resolve, reject ) => process.nextTick( resolve ) )
     }

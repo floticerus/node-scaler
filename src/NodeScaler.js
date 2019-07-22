@@ -25,22 +25,32 @@ class NodeScaler extends EventEmitter
 
 	async start()
 	{
-		if ( !this.backend )
-		{
-			throw new Error( 'No backend instance' )
-		}
+		return new Promise( async ( resolve, reject ) =>
+			{
+				if ( !this.backend )
+				{
+					return reject( new Error( 'No backend instance' ) )
+				}
 
-		try
-		{
-			await this.backend.start()
-		}
+				if ( !this.frontend )
+				{
+					return reject( new Error( 'No frontend instance' ) )
+				}
 
-		catch( err )
-		{
-			throw err
-		}
+				try
+				{
+					await this.backend.start( this )
+					await this.frontend.start( this )
+				}
 
+				catch( err )
+				{
+					return reject( err )
+				}
 
+				resolve()
+			}
+		)
 	}
 
 	stop()
@@ -62,24 +72,30 @@ class NodeScaler extends EventEmitter
 
 	async createClient()
 	{
-		if ( !this.backend )
-		{
-			throw new Error( 'No backend instance' )
-		}
+		return new Promise( async ( resolve, reject ) =>
+			{
+				if ( !this.backend )
+				{
+					return reject( new Error( 'No backend instance' ) )
+				}
 
-		let client = null
+				let client = null
 
-		try
-		{
-			client = await this.backend.createClient()
-		}
+				try
+				{
+					client = await this.backend.createClient()
+				}
 
-		catch( err )
-		{
-			throw err
-		}
+				catch( err )
+				{
+					return reject( err )
+				}
 
-		return client
+				resolve( client )
+			}
+		)
+
+		
 
 		// // find a new client id
 		// return new Promise( async ( resolve, reject ) =>
